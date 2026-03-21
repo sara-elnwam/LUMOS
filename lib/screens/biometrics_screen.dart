@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
-import '../main.dart' show LocaleProvider;
+import '../providers/app_provider.dart';
 
 // ── Colors ───────────────────────────────────────────────────
 const _bg     = Color(0xFF0D0A07);
@@ -263,7 +263,7 @@ class _BiometricsScreenState extends State<BiometricsScreen>
   // ════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    final p = context.watch<LocaleProvider>();
+    final p = context.watch<AppProvider>();
     final c = _c;
 
     return Directionality(

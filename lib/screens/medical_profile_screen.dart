@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart' show LocaleProvider, AppStrings;
 
-// ============================================================
-//  COLORS
-// ============================================================
+
 const _bg      = Color(0xFF0D0A07);
 const _card    = Color(0xFF1A1008);
 const _orange  = Color(0xFFF27F0D);
@@ -14,9 +12,7 @@ const _txtGray = Color(0xFF94A3B8);
 const _chipBg  = Color(0x33F27F0D);
 const _chipBdr = Color(0x4DF27F0D);
 
-// ============================================================
-//  SHARED — TOP NAV
-// ============================================================
+
 class _TopNav extends StatelessWidget {
   final String title;
   final VoidCallback onBack;
@@ -53,9 +49,6 @@ class _TopNav extends StatelessWidget {
   }
 }
 
-// ============================================================
-//  SHARED — DONE BUTTON
-// ============================================================
 class _DoneButton extends StatelessWidget {
   final VoidCallback onTap;
   const _DoneButton({required this.onTap});
@@ -83,9 +76,7 @@ class _DoneButton extends StatelessWidget {
   }
 }
 
-// ============================================================
-//  SHARED — SECTION LABEL
-// ============================================================
+
 class _SectionLabel extends StatelessWidget {
   final String text;
   const _SectionLabel(this.text);
@@ -99,19 +90,16 @@ class _SectionLabel extends StatelessWidget {
   );
 }
 
-// ============================================================
-//  SHARED — EMPTY STATE ILLUSTRATION
-// ============================================================
 class _EmptyIllustration extends StatelessWidget {
-  final bool isDisease;
-  const _EmptyIllustration({this.isDisease = false});
+  final IconData centerIcon;
+  const _EmptyIllustration({this.centerIcon = Icons.medication_outlined});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 220, height: 220,
       child: Stack(alignment: Alignment.center, children: [
-        // Outer faint ring
+
         Container(
           width: 220, height: 220,
           decoration: BoxDecoration(
@@ -120,7 +108,6 @@ class _EmptyIllustration extends StatelessWidget {
             border: Border.all(color: _orange.withOpacity(0.10), width: 1),
           ),
         ),
-        // Main gradient circle
         Container(
           width: 165, height: 165,
           decoration: BoxDecoration(
@@ -131,53 +118,14 @@ class _EmptyIllustration extends StatelessWidget {
             ),
             border: Border.all(color: _orange.withOpacity(0.20), width: 1),
           ),
-          child: const Icon(Icons.medication_outlined, color: _orange, size: 54),
+          child: Icon(centerIcon, color: _orange, size: 54),
         ),
-        // Floating icons — only for Diseases
-        if (isDisease) ...[
-          // Top-right: medical_services, rotation -12deg
-          Positioned(
-            top: 16, right: 16,
-            child: Transform.rotate(
-              angle: -12 * 3.14159 / 180,
-              child: Container(
-                width: 48, height: 48,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60),
-                  color: _orange.withOpacity(0.05),
-                  border: Border.all(color: _orange.withOpacity(0.10), width: 1),
-                ),
-                child: Icon(Icons.medical_services_outlined,
-                    color: _orange.withOpacity(0.65), size: 22),
-              ),
-            ),
-          ),
-          // Bottom-left: monitor_heart, rotation +12deg
-          Positioned(
-            bottom: 20, left: 20,
-            child: Transform.rotate(
-              angle: 12 * 3.14159 / 180,
-              child: Container(
-                width: 38, height: 38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60),
-                  color: _orange.withOpacity(0.05),
-                  border: Border.all(color: _orange.withOpacity(0.10), width: 1),
-                ),
-                child: Icon(Icons.monitor_heart_outlined,
-                    color: _orange.withOpacity(0.65), size: 18),
-              ),
-            ),
-          ),
-        ],
       ]),
     );
   }
 }
 
-// ============================================================
-//  MEDICAL PROFILE SCREEN  (main list)
-// ============================================================
+
 class MedicalProfileScreen extends StatefulWidget {
   const MedicalProfileScreen({super.key});
   @override
@@ -336,9 +284,7 @@ class _Tile extends StatelessWidget {
   }
 }
 
-// ============================================================
-//  SEX SCREEN
-// ============================================================
+
 class SexScreen extends StatefulWidget {
   final String? current;
   const SexScreen({super.key, this.current});
@@ -364,63 +310,64 @@ class _SexScreenState extends State<SexScreen> {
         body: SafeArea(child: Column(children: [
           _TopNav(title: p.tr('sex').toUpperCase(), onBack: () => Navigator.pop(context)),
           Expanded(child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
-            child: Column(children: [
-              ...opts.map((opt) {
-                final label = opt['label'] as String;
-                final icon  = opt['icon'] as IconData;
-                final isSel = _sel == label;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _sel = label),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.03),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSel ? _orange : Colors.white.withOpacity(0.08),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(children: [
-                        Container(
-                          width: 40, height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _orange.withOpacity(0.15),
-                          ),
-                          child: Icon(icon, color: _orange, size: 22),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(child: Text(label,
-                            style: TextStyle(
-                              color: _txtW, fontSize: 16,
-                              fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                            ))),
-                        // Radio button
-                        AnimatedContainer(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...opts.map((opt) {
+                    final label = opt['label'] as String;
+                    final icon  = opt['icon'] as IconData;
+                    final isSel = _sel == label;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: GestureDetector(
+                        onTap: () => setState(() => _sel = label),
+                        child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-                          width: 24, height: 24,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isSel ? _orange : Colors.transparent,
+                            color: Colors.white.withOpacity(0.03),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isSel ? _orange : _txtGray, width: 2,
+                              color: isSel ? _orange : Colors.white.withOpacity(0.08),
+                              width: 1,
                             ),
                           ),
-                          child: isSel
-                              ? const Icon(Icons.circle, color: Colors.white, size: 10)
-                              : null,
+                          child: Row(children: [
+                            Container(
+                              width: 40, height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _orange.withOpacity(0.15),
+                              ),
+                              child: Icon(icon, color: _orange, size: 22),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(child: Text(label,
+                                style: TextStyle(
+                                  color: _txtW, fontSize: 16,
+                                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                                ))),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 24, height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isSel ? _orange : Colors.transparent,
+                                border: Border.all(
+                                  color: isSel ? _orange : _txtGray, width: 2,
+                                ),
+                              ),
+                              child: isSel
+                                  ? const Icon(Icons.circle, color: Colors.white, size: 10)
+                                  : null,
+                            ),
+                          ]),
                         ),
-                      ]),
-                    ),
-                  ),
-                );
-              }),
-            ]),
+                      ),
+                    );
+                  }),
+                ]),
           )),
           _DoneButton(onTap: () => Navigator.pop(context, _sel)),
         ])),
@@ -429,9 +376,7 @@ class _SexScreenState extends State<SexScreen> {
   }
 }
 
-// ============================================================
-//  BLOOD TYPE SCREEN
-// ============================================================
+
 class BloodTypeScreen extends StatefulWidget {
   final String? current;
   const BloodTypeScreen({super.key, this.current});
@@ -559,17 +504,18 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
                             duration: const Duration(milliseconds: 150),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
-                              color: isSel ? _orange.withOpacity(0.20) : Colors.white.withOpacity(0.03),
+                              color: isSel ? _orange : _orange.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: isSel ? _orange.withOpacity(0.60) : Colors.white.withOpacity(0.12),
+                                color: isSel ? _orange : _orange.withOpacity(0.30),
+                                width: 1,
                               ),
                             ),
                             child: Text(item,
                                 style: TextStyle(
-                                  color: isSel ? _orange : _txtW,
+                                  color: isSel ? Colors.black : _txtW,
                                   fontSize: 13,
-                                  fontWeight: isSel ? FontWeight.w600 : FontWeight.w400,
+                                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
                                 )),
                           ),
                         );
@@ -669,7 +615,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 const SizedBox(height: 24),
               ] else ...[
                 const SizedBox(height: 20),
-                const _EmptyIllustration(isDisease: false),
+                const _EmptyIllustration(centerIcon: Icons.medication_outlined),
                 const SizedBox(height: 20),
                 const Text('Your medicine cabinet is\nempty',
                     textAlign: TextAlign.center,
@@ -761,7 +707,7 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
                 const SizedBox(height: 24),
               ] else ...[
                 const SizedBox(height: 20),
-                const _EmptyIllustration(isDisease: true),
+                const _EmptyIllustration(centerIcon: Icons.health_and_safety_outlined),
                 const SizedBox(height: 20),
                 const Text('Your disease list is\nempty',
                     textAlign: TextAlign.center,
