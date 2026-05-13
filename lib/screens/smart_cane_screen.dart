@@ -2,9 +2,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../main.dart';
+import 'medical_profile_screen.dart';
+import 'settings_screen.dart';
 
 const _bg     = Color(0xFF0D0A07);
-const _orange = Color(0xFFFF6A00);
+const _orange = Color(0xFFF27F0D);
 const _txtW   = Color(0xFFF8F8F8);
 
 class SmartCaneScreen extends StatefulWidget {
@@ -28,60 +32,95 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
     _fadeCtrl.forward();
   }
 
+  Future<void> _speakStatus() async {
+    final p = context.read<LocaleProvider>();
+    final status = _isOn
+        ? AppStrings.get(p.langCode, 'cane_connected')
+        : AppStrings.get(p.langCode, 'cane_disconnected');
+    final battery = AppStrings.get(p.langCode, 'cane_battery');
+    final time    = AppStrings.get(p.langCode, 'cane_time');
+    await p.speak('$status. $battery. $time.');
+  }
+
   @override
-  void dispose() { _fadeCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _fadeCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final p = context.watch<LocaleProvider>();
+
     return Scaffold(
       backgroundColor: _bg,
       extendBodyBehindAppBar: true,
-      appBar: _buildAppBar(context),
+      extendBody: true,
+      appBar: _buildAppBar(context, p),
       body: FadeTransition(
         opacity: _fadeAnim,
         child: Stack(
           fit: StackFit.expand,
           children: [
+            // 1. الصورة الخلفية
             Positioned.fill(
               child: Image.asset(
                 'assets/images/CANE.png',
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
-                errorBuilder: (_, __, ___) => Container(color: _bg),
               ),
             ),
+
+            // 2. التدرج اللوني
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.3, 0.7, 1.0],
                     colors: [
-                      Colors.black.withOpacity(0.85),
-                      Colors.black.withOpacity(0.45),
-                      Colors.black.withOpacity(0.92),
+                      Colors.black.withOpacity(0.8),
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.9),
                     ],
                   ),
                 ),
               ),
             ),
+
+            // 3. طبقة مخفية للـ TTS والعودة للهوم
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: _speakStatus,
+                  onDoubleTap: () =>
+                      Navigator.of(context).popUntil((route) => route.isFirst),
+                  child: const SizedBox.expand(),
+                ),
+              ),
+            ),
+
+            // 4. العناصر التفاعلية (الكارد)
             SafeArea(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 16),
-
+                  const SizedBox(height: 60),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 21),
+                    padding: const EdgeInsets.symmetric(horizontal: 34),
                     child: _StatusCard(
                       isOn: _isOn,
-                      onToggle: (v) => setState(() => _isOn = v),
+                      onToggle: (v) {
+                        setState(() => _isOn = v);
+                        _speakStatus();
+                      },
+                      p: p,
                     ),
                   ),
-
-                  const Spacer(),
-
-                  const SizedBox(height: 36),
                 ],
               ),
             ),
@@ -92,33 +131,33 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, LocaleProvider p) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      leading: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.white.withOpacity(0.10)),
+      leadingWidth: 80,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: Center(
+          child: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.03),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white.withOpacity(0.10)),
+              ),
+              child: const Icon(Icons.arrow_back, color: _txtW, size: 20),
             ),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: _txtW, size: 16),
           ),
         ),
       ),
       title: Text(
-        'Smart Cane',
+        p.tr('smart_cane'),
         style: GoogleFonts.manrope(
-          color: _txtW,
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          height: 24 / 17,
-        ),
+            color: _txtW, fontSize: 17, fontWeight: FontWeight.w600),
       ),
       centerTitle: true,
     );
@@ -128,7 +167,12 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
 class _StatusCard extends StatelessWidget {
   final bool isOn;
   final ValueChanged<bool> onToggle;
-  const _StatusCard({required this.isOn, required this.onToggle});
+  final LocaleProvider p;
+  const _StatusCard({
+    required this.isOn,
+    required this.onToggle,
+    required this.p,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -137,83 +181,41 @@ class _StatusCard extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
-          width: double.infinity,
-          constraints: const BoxConstraints(minHeight: 202),
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+          width: 305,
+          height: 202,
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.20),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: const Color(0xFF393535).withOpacity(0.41),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFF2F2F2).withOpacity(0.06),
-                blurRadius: 22,
-                spreadRadius: -4,
-              ),
-              BoxShadow(
-                color: Colors.black.withOpacity(0.23),
-                blurRadius: 21.21,
-                spreadRadius: -3.75,
-                offset: const Offset(10, 10),
-              ),
-            ],
+                color: const Color(0xFFF2F2F2).withOpacity(0.10)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
+              Text('36%',
+                  style: GoogleFonts.manrope(
+                      color: _txtW,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500)),
+              const SizedBox(height: 12),
               Text(
-                '36%',
+                p.tr('battery_time'),
                 style: GoogleFonts.manrope(
-                  color: _txtW,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w500,
-                  height: 1.0,
-                ),
+                    color: _txtW.withOpacity(0.60), fontSize: 12),
               ),
-              const SizedBox(height: 8),
-
-              Container(
-                height: 1,
-                color: _orange.withOpacity(0.50),
-              ),
-              const SizedBox(height: 10),
-
-              Text(
-                'Estimated time remaining : 3h 20m',
-                style: GoogleFonts.manrope(
-                  color: _txtW.withOpacity(0.80),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0.12,
-                  height: 1.0,
-                ),
-              ),
-              const SizedBox(height: 16),
-
+              const Spacer(),
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => onToggle(!isOn),
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 220),
-                      style: GoogleFonts.jetBrainsMono(
-                        color: isOn
-                            ? const Color(0xFFDADADA)
-                            : _txtW.withOpacity(0.40),
+                  Text(
+                    isOn ? p.tr('toggle_on') : p.tr('toggle_off'),
+                    style: GoogleFonts.manrope(
+                        color: _txtW,
                         fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.24,
-                        height: 1.0,
-                      ),
-                      child: Text(isOn ? 'On' : 'Off'),
-                    ),
+                        fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(width: 14),
-                  _OrangeToggle(value: isOn, onChanged: onToggle),
+                  const SizedBox(width: 16),
+                  _CustomToggle(value: isOn, onChanged: onToggle),
                 ],
               ),
             ],
@@ -224,83 +226,91 @@ class _StatusCard extends StatelessWidget {
   }
 }
 
-class _OrangeToggle extends StatelessWidget {
+class _CustomToggle extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
-  const _OrangeToggle({required this.value, required this.onChanged});
+  const _CustomToggle({required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onChanged(!value),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeInOut,
-        width: 52,
-        height: 28,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: value
-              ? const Color(0xFF952B00).withOpacity(0.53)
-              : Colors.white.withOpacity(0.10),
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              left: value ? 26 : 2,
-              top: 2,
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: value
-                      ? const Color(0xFFFF6A00)
-                      : Colors.white.withOpacity(0.35),
-                  boxShadow: value
-                      ? [
-                    BoxShadow(
-                      color: const Color(0xFFFF6A00).withOpacity(0.55),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    )
-                  ]
-                      : [],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return Switch(
+      value: value,
+      onChanged: onChanged,
+      activeColor: _orange,
+      activeTrackColor: _orange.withOpacity(0.3),
+      inactiveThumbColor: Colors.white.withOpacity(0.4),
+      inactiveTrackColor: Colors.white.withOpacity(0.1),
     );
   }
 }
 
 class _BottomNav extends StatelessWidget {
   const _BottomNav();
+
   @override
   Widget build(BuildContext context) {
-    final bottom = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: 64 + bottom,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0D0A07).withOpacity(0.96),
-        border: Border(
-          top: BorderSide(color: _orange.withOpacity(0.15), width: 1),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 80),
+      color: Colors.transparent,
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.white.withOpacity(0.12), width: 1),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(context, Icons.home_outlined, 0),
+                _buildNavItem(context, Icons.add_circle_outline, 1),
+                _buildNavItem(context, Icons.person_outline, 2),
+                _buildNavItem(context, Icons.settings_outlined, 3),
+              ],
+            ),
+          ),
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottom),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            Icon(Icons.home_rounded,      color: _orange,           size: 24),
-            Icon(Icons.add,               color: Color(0xFFF8F8F8), size: 24),
-            Icon(Icons.person_outline,    color: Color(0xFFF8F8F8), size: 24),
-            Icon(Icons.settings_outlined, color: Color(0xFFF8F8F8), size: 24),
-          ],
+    );
+  }
+
+  Widget _buildNavItem(BuildContext context, IconData icon, int index) {
+    final isActive = index == 0;
+    return GestureDetector(
+      onTap: () {
+        if (index == 0) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        } else if (index == 2) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const MedicalProfileScreen()));
+        } else if (index == 3) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()));
+        }
+      },
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: isActive
+              ? const Color(0xFFFF6A00).withOpacity(0.15)
+              : Colors.transparent,
+          shape: BoxShape.circle,
+          border: isActive
+              ? Border.all(
+              color: const Color(0xFFFF6A00).withOpacity(0.4), width: 1.2)
+              : null,
+        ),
+        child: Icon(
+          icon,
+          color: isActive
+              ? const Color(0xFFFF6A00)
+              : Colors.white.withOpacity(0.45),
+          size: 26,
         ),
       ),
     );

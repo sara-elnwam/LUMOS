@@ -1,6 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../main.dart';
+import 'medical_profile_screen.dart';
+import 'settings_screen.dart';
 
 const _bg     = Color(0xFF0D0A07);
 const _orange = Color(0xFFFF6A00);
@@ -28,19 +32,26 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
   }
 
   @override
-  void dispose() { _fadeCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _fadeCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final p = context.watch<LocaleProvider>();
+
     return Scaffold(
       backgroundColor: _bg,
       extendBodyBehindAppBar: true,
-      appBar: _buildAppBar(context),
+      extendBody: true,
+      appBar: _buildAppBar(context, p),
       body: FadeTransition(
         opacity: _fadeAnim,
         child: Stack(
           fit: StackFit.expand,
           children: [
+            // 1. صورة الخلفية
             Positioned.fill(
               child: Image.asset(
                 'assets/images/Smart_Glasses.png',
@@ -49,6 +60,8 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
                 errorBuilder: (_, __, ___) => Container(color: _bg),
               ),
             ),
+
+            // 2. التدرج اللوني (Overlay)
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -65,6 +78,24 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
                 ),
               ),
             ),
+
+            // 3. الطبقة الشفافة لالتقاط الضغط مرتين للعودة للهوم
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {},
+                  onDoubleTap: () {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                  child: const SizedBox.expand(),
+                ),
+              ),
+            ),
+
+            // 4. المحتوى التفاعلي (Card)
             SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,9 +106,9 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
                     child: _StatusCard(
                       isOn: _isOn,
                       onToggle: (v) => setState(() => _isOn = v),
+                      p: p,
                     ),
                   ),
-
                   const Spacer(),
                   const SizedBox(height: 36),
                 ],
@@ -90,7 +121,7 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, LocaleProvider p) {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -110,7 +141,7 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
         ),
       ),
       title: Text(
-        'Smart Glasses',
+        p.tr('smart_glasses'),
         style: GoogleFonts.manrope(
           color: _txtW,
           fontSize: 17,
@@ -122,10 +153,12 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
     );
   }
 }
+
 class _StatusCard extends StatelessWidget {
   final bool isOn;
   final ValueChanged<bool> onToggle;
-  const _StatusCard({required this.isOn, required this.onToggle});
+  final LocaleProvider p;
+  const _StatusCard({required this.isOn, required this.onToggle, required this.p});
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +208,7 @@ class _StatusCard extends StatelessWidget {
               Container(height: 1, color: _orange.withOpacity(0.50)),
               const SizedBox(height: 10),
               Text(
-                'Estimated time remaining : 3h 20m',
+                p.tr('battery_time'),
                 style: GoogleFonts.manrope(
                   color: _txtW.withOpacity(0.80),
                   fontSize: 12,
@@ -200,7 +233,7 @@ class _StatusCard extends StatelessWidget {
                         letterSpacing: 0.24,
                         height: 1.0,
                       ),
-                      child: Text(isOn ? 'On' : 'Off'),
+                      child: Text(isOn ? p.tr('toggle_on') : p.tr('toggle_off')),
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -214,6 +247,7 @@ class _StatusCard extends StatelessWidget {
     );
   }
 }
+
 class _OrangeToggle extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -267,29 +301,77 @@ class _OrangeToggle extends StatelessWidget {
     );
   }
 }
+
 class _BottomNav extends StatelessWidget {
   const _BottomNav();
+
   @override
   Widget build(BuildContext context) {
-    final bottom = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: 64 + bottom,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0D0A07).withOpacity(0.96),
-        border: Border(
-          top: BorderSide(color: _orange.withOpacity(0.15), width: 1),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 80),
+      color: Colors.transparent,
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.12),
+            width: 1,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(context, Icons.home_outlined, 0),
+                _buildNavItem(context, Icons.add_circle_outline, 1),
+                _buildNavItem(context, Icons.person_outline, 2),
+                _buildNavItem(context, Icons.settings_outlined, 3),
+              ],
+            ),
+          ),
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottom),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            Icon(Icons.home_rounded,      color: _orange,           size: 24),
-            Icon(Icons.add,               color: Color(0xFFF8F8F8), size: 24),
-            Icon(Icons.person_outline,    color: Color(0xFFF8F8F8), size: 24),
-            Icon(Icons.settings_outlined, color: Color(0xFFF8F8F8), size: 24),
-          ],
+    );
+  }
+
+  Widget _buildNavItem(BuildContext context, IconData icon, int index) {
+    bool isActive = index == 0;
+
+    return GestureDetector(
+      onTap: () {
+        if (index == 0) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        } else if (index == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MedicalProfileScreen()),
+          );
+        } else if (index == 3) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
+        }
+      },
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFFFF6A00).withOpacity(0.15) : Colors.transparent,
+          shape: BoxShape.circle,
+          border: isActive
+              ? Border.all(color: const Color(0xFFFF6A00).withOpacity(0.4), width: 1.2)
+              : null,
+        ),
+        child: Icon(
+          icon,
+          color: isActive ? const Color(0xFFFF6A00) : Colors.white.withOpacity(0.45),
+          size: 26,
         ),
       ),
     );

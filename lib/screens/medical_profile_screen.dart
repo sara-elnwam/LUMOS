@@ -1,8 +1,9 @@
 // lib/screens/medical_profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../main.dart' show LocaleProvider, AppStrings;
-
+import '../services/medical_api_service.dart';
 
 const _bg      = Color(0xFF0D0A07);
 const _card    = Color(0xFF1A1008);
@@ -11,6 +12,7 @@ const _txtW    = Color(0xFFF1F5F9);
 const _txtGray = Color(0xFF94A3B8);
 const _chipBg  = Color(0x33F27F0D);
 const _chipBdr = Color(0x4DF27F0D);
+
 
 
 class _TopNav extends StatelessWidget {
@@ -76,7 +78,6 @@ class _DoneButton extends StatelessWidget {
   }
 }
 
-
 class _SectionLabel extends StatelessWidget {
   final String text;
   const _SectionLabel(this.text);
@@ -90,16 +91,16 @@ class _SectionLabel extends StatelessWidget {
   );
 }
 
+
 class _EmptyIllustration extends StatelessWidget {
-  final IconData centerIcon;
-  const _EmptyIllustration({this.centerIcon = Icons.medication_outlined});
+  final bool isDisease;
+  const _EmptyIllustration({this.isDisease = false});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 220, height: 220,
       child: Stack(alignment: Alignment.center, children: [
-
         Container(
           width: 220, height: 220,
           decoration: BoxDecoration(
@@ -118,8 +119,42 @@ class _EmptyIllustration extends StatelessWidget {
             ),
             border: Border.all(color: _orange.withOpacity(0.20), width: 1),
           ),
-          child: Icon(centerIcon, color: _orange, size: 54),
+          child: const Icon(Icons.medication_outlined, color: _orange, size: 54),
         ),
+        if (isDisease) ...[
+          Positioned(
+            top: 16, right: 16,
+            child: Transform.rotate(
+              angle: -12 * 3.14159 / 180,
+              child: Container(
+                width: 48, height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(60),
+                  color: _orange.withOpacity(0.05),
+                  border: Border.all(color: _orange.withOpacity(0.10), width: 1),
+                ),
+                child: Icon(Icons.medical_services_outlined,
+                    color: _orange.withOpacity(0.65), size: 22),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 20, left: 20,
+            child: Transform.rotate(
+              angle: 12 * 3.14159 / 180,
+              child: Container(
+                width: 38, height: 38,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(60),
+                  color: _orange.withOpacity(0.05),
+                  border: Border.all(color: _orange.withOpacity(0.10), width: 1),
+                ),
+                child: Icon(Icons.monitor_heart_outlined,
+                    color: _orange.withOpacity(0.65), size: 18),
+              ),
+            ),
+          ),
+        ],
       ]),
     );
   }
@@ -143,16 +178,86 @@ class _MedicalProfileScreenState extends State<MedicalProfileScreen>
   List<String> _medications = [];
   List<String> _diseases    = [];
 
+  bool _isLoading = false;
+  bool _isSaving = false;
+
   @override
   void initState() {
     super.initState();
     _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeIn);
     _anim.forward();
+    _loadMedicalData();
   }
 
   @override
-  void dispose() { _anim.dispose(); super.dispose(); }
+  void dispose() {
+    _anim.dispose();
+    super.dispose();
+  }
+
+
+  Future<void> _loadMedicalData() async {
+    setState(() => _isLoading = true);
+
+    final profile = await MedicalAPIService.getMedicalProfile();
+    if (profile != null && mounted) {
+      setState(() {
+        _sex = MedicalAPIService.genderFromInt(profile['gender']);
+        _bloodType = MedicalAPIService.bloodTypeFromInt(profile['bloodType']);
+      });
+    }
+
+    final allergies = await MedicalAPIService.getAllergies();
+    if (mounted) setState(() => _allergies = allergies);
+    final medications = await MedicalAPIService.getMedications();
+    if (mounted) setState(() => _medications = medications);
+    final diseases = await MedicalAPIService.getChronicDiseases();
+    if (mounted) setState(() => _diseases = diseases);
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _saveMedicalProfile() async {
+    setState(() => _isSaving = true);
+    final success = await MedicalAPIService.updateMedicalProfile(
+      gender: MedicalAPIService.genderToInt(_sex),
+      bloodType: MedicalAPIService.bloodTypeToInt(_bloodType),
+    );
+    setState(() => _isSaving = false);
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_getSaveSuccessMessage())),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_getSaveErrorMessage())),
+      );
+    }
+  }
+
+  String _getSaveSuccessMessage() {
+    final p = context.read<LocaleProvider>();
+    switch (p.langCode) {
+      case 'ar': return 'تم حفظ الملف الطبي بنجاح';
+      case 'es': return 'Perfil médico guardado con éxito';
+      case 'fr': return 'Profil médical enregistré avec succès';
+      case 'de': return 'Medizinisches Profil erfolgreich gespeichert';
+      case 'ja': return '医療プロフィールを保存しました';
+      default: return 'Medical profile saved successfully';
+    }
+  }
+
+  String _getSaveErrorMessage() {
+    final p = context.read<LocaleProvider>();
+    switch (p.langCode) {
+      case 'ar': return 'حدث خطأ أثناء حفظ الملف الطبي';
+      case 'es': return 'Error al guardar el perfil médico';
+      case 'fr': return 'Erreur lors de l\'enregistrement du profil médical';
+      case 'de': return 'Fehler beim Speichern des medizinischen Profils';
+      case 'ja': return '医療プロフィールの保存中にエラーが発生しました';
+      default: return 'Error saving medical profile';
+    }
+  }
 
   String _sub(String? val, List<String> list) {
     if (val != null && val.isNotEmpty) return val;
@@ -172,12 +277,18 @@ class _MedicalProfileScreenState extends State<MedicalProfileScreen>
 
   Future<void> _goSex(BuildContext ctx, LocaleProvider p) async {
     final r = await Navigator.of(ctx).push<String>(_slide(SexScreen(current: _sex)));
-    if (r != null) setState(() => _sex = r);
+    if (r != null) {
+      setState(() => _sex = r);
+      _saveMedicalProfile();
+    }
   }
 
   Future<void> _goBlood(BuildContext ctx) async {
     final r = await Navigator.of(ctx).push<String>(_slide(BloodTypeScreen(current: _bloodType)));
-    if (r != null) setState(() => _bloodType = r);
+    if (r != null) {
+      setState(() => _bloodType = r);
+      _saveMedicalProfile();
+    }
   }
 
   Future<void> _goAllergies(BuildContext ctx) async {
@@ -193,6 +304,13 @@ class _MedicalProfileScreenState extends State<MedicalProfileScreen>
   Future<void> _goDiseases(BuildContext ctx) async {
     final r = await Navigator.of(ctx).push<List<String>>(_slide(DiseasesScreen(current: _diseases)));
     if (r != null) setState(() => _diseases = r);
+  }
+
+  void _shareProfile(String userId) {
+    Share.share(
+      'Check out my Lumos Medical Profile:\nhttps://lumos-app.com/profile/$userId',
+      subject: 'Lumos Medical Profile',
+    );
   }
 
   @override
@@ -212,35 +330,78 @@ class _MedicalProfileScreenState extends State<MedicalProfileScreen>
         backgroundColor: _card,
         body: FadeTransition(
           opacity: _fade,
-          child: SafeArea(child: Column(children: [
-            Expanded(child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(p.tr('medical_profile'),
-                    style: const TextStyle(color: _orange, fontSize: 42,
-                        fontWeight: FontWeight.w800, height: 1.1)),
-                const SizedBox(height: 40),
-                ...items.map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _Tile(item: item),
-                )),
-              ]),
-            )),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-              child: SizedBox(width: double.infinity, height: 56,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pushReplacementNamed('/biometrics'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _orange, foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      elevation: 0,
+          child: SafeArea(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator(color: _orange))
+                : Column(children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(p.tr('medical_profile'),
+                          style: const TextStyle(
+                            color: _orange, fontSize: 42,
+                            fontWeight: FontWeight.w800, height: 1.1,
+                          )),
+                      const SizedBox(height: 40),
+                      ...items.map((item) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _Tile(item: item),
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                child: Row(children: [
+                  Expanded(
+                    child: SizedBox(height: 56,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _shareProfile('lumos_user_001'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: _orange,
+                          side: const BorderSide(color: _orange, width: 1.5),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
+                        icon: const Icon(Icons.share_outlined, size: 20),
+                        label: const Text('Share',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                      ),
                     ),
-                    child: Text(p.tr('continue'),
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-                  )),
-            ),
-          ])),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: SizedBox(height: 56,
+                      child: ElevatedButton(
+                        onPressed: _isSaving
+                            ? null
+                            : () => Navigator.of(context).pushReplacementNamed('/biometrics'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _orange, foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          elevation: 0,
+                        ),
+                        child: _isSaving
+                            ? const SizedBox(
+                          width: 24, height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.black, strokeWidth: 2.5,
+                          ),
+                        )
+                            : Text(p.tr('continue'),
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+              const SizedBox(height: 24),
+            ]),
+          ),
         ),
       ),
     );
@@ -284,16 +445,23 @@ class _Tile extends StatelessWidget {
   }
 }
 
-
 class SexScreen extends StatefulWidget {
   final String? current;
   const SexScreen({super.key, this.current});
   @override State<SexScreen> createState() => _SexScreenState();
 }
-
 class _SexScreenState extends State<SexScreen> {
   String? _sel;
-  @override void initState() { super.initState(); _sel = widget.current; }
+  bool _isSaving = false;
+
+  @override void initState() {
+    super.initState();
+    _sel = widget.current;
+  }
+
+  void _saveAndClose() {
+    Navigator.pop(context, _sel);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -310,72 +478,69 @@ class _SexScreenState extends State<SexScreen> {
         body: SafeArea(child: Column(children: [
           _TopNav(title: p.tr('sex').toUpperCase(), onBack: () => Navigator.pop(context)),
           Expanded(child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ...opts.map((opt) {
-                    final label = opt['label'] as String;
-                    final icon  = opt['icon'] as IconData;
-                    final isSel = _sel == label;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: GestureDetector(
-                        onTap: () => setState(() => _sel = label),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.03),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSel ? _orange : Colors.white.withOpacity(0.08),
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(children: [
-                            Container(
-                              width: 40, height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _orange.withOpacity(0.15),
-                              ),
-                              child: Icon(icon, color: _orange, size: 22),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(child: Text(label,
-                                style: TextStyle(
-                                  color: _txtW, fontSize: 16,
-                                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                                ))),
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 24, height: 24,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isSel ? _orange : Colors.transparent,
-                                border: Border.all(
-                                  color: isSel ? _orange : _txtGray, width: 2,
-                                ),
-                              ),
-                              child: isSel
-                                  ? const Icon(Icons.circle, color: Colors.white, size: 10)
-                                  : null,
-                            ),
-                          ]),
+            padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
+            child: Column(children: [
+              ...opts.map((opt) {
+                final label = opt['label'] as String;
+                final icon  = opt['icon'] as IconData;
+                final isSel = _sel == label;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _sel = label),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.03),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isSel ? _orange : Colors.white.withOpacity(0.08),
+                          width: 1,
                         ),
                       ),
-                    );
-                  }),
-                ]),
+                      child: Row(children: [
+                        Container(
+                          width: 40, height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _orange.withOpacity(0.15),
+                          ),
+                          child: Icon(icon, color: _orange, size: 22),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(child: Text(label,
+                            style: TextStyle(
+                              color: _txtW, fontSize: 16,
+                              fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                            ))),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: 24, height: 24,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSel ? _orange : Colors.transparent,
+                            border: Border.all(
+                              color: isSel ? _orange : _txtGray, width: 2,
+                            ),
+                          ),
+                          child: isSel
+                              ? const Icon(Icons.circle, color: Colors.white, size: 10)
+                              : null,
+                        ),
+                      ]),
+                    ),
+                  ),
+                );
+              }),
+            ]),
           )),
-          _DoneButton(onTap: () => Navigator.pop(context, _sel)),
+          _DoneButton(onTap: _saveAndClose),
         ])),
       ),
     );
   }
 }
-
 
 class BloodTypeScreen extends StatefulWidget {
   final String? current;
@@ -385,8 +550,17 @@ class BloodTypeScreen extends StatefulWidget {
 
 class _BloodTypeScreenState extends State<BloodTypeScreen> {
   String? _sel;
+  bool _isSaving = false;
   static const _types = ['A+', 'A−', 'B+', 'B−', 'AB+', 'AB−', 'O+', 'O−'];
-  @override void initState() { super.initState(); _sel = widget.current; }
+
+  @override void initState() {
+    super.initState();
+    _sel = widget.current;
+  }
+
+  void _saveAndClose() {
+    Navigator.pop(context, _sel);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -445,16 +619,13 @@ class _BloodTypeScreenState extends State<BloodTypeScreen> {
               )),
             ]),
           )),
-          _DoneButton(onTap: () => Navigator.pop(context, _sel)),
+          _DoneButton(onTap: _saveAndClose),
         ])),
       ),
     );
   }
 }
 
-// ============================================================
-//  ALLERGIES SCREEN
-// ============================================================
 class AllergiesScreen extends StatefulWidget {
   final List<String> current;
   const AllergiesScreen({super.key, required this.current});
@@ -464,6 +635,7 @@ class AllergiesScreen extends StatefulWidget {
 class _AllergiesScreenState extends State<AllergiesScreen> {
   late List<String> _sel;
   final _ctrl = TextEditingController();
+  bool _isLoading = false;
 
   static const _cats = {
     'FOOD ALLERGENS':               ['Peanuts', 'Milk / Dairy', 'Shellfish', 'Wheat', 'Eggs', 'Soy', 'Tree Nuts'],
@@ -472,11 +644,30 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
     'ENVIRONMENTAL ALLERGENS':      ['Ragweed', 'Grass Pollen', 'Dust Mites', 'Mold'],
   };
 
-  @override void initState() { super.initState(); _sel = List.from(widget.current); }
-  @override void dispose() { _ctrl.dispose(); super.dispose(); }
+  @override void initState() {
+    super.initState();
+    _sel = List.from(widget.current);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   void _toggle(String item) => setState(() =>
   _sel.contains(item) ? _sel.remove(item) : _sel.add(item));
+
+  Future<void> _addCustomAllergen(String name) async {
+    setState(() => _isLoading = true);
+    final success = await MedicalAPIService.addAllergy(name);
+    if (success && mounted) {
+      final newAllergies = await MedicalAPIService.getAllergies();
+      setState(() => _sel = newAllergies);
+    }
+    setState(() => _isLoading = false);
+    if (mounted) Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -486,7 +677,7 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
       child: Scaffold(
         backgroundColor: _bg,
         body: SafeArea(child: Column(children: [
-          _TopNav(title: p.tr('allergies'), onBack: () => Navigator.pop(context)),
+          _TopNav(title: p.tr('allergies'), onBack: () => Navigator.pop(context, _sel)),
           Expanded(child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -504,18 +695,17 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
                             duration: const Duration(milliseconds: 150),
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
-                              color: isSel ? _orange : _orange.withOpacity(0.08),
+                              color: isSel ? _orange.withOpacity(0.20) : Colors.white.withOpacity(0.03),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
-                                color: isSel ? _orange : _orange.withOpacity(0.30),
-                                width: 1,
+                                color: isSel ? _orange.withOpacity(0.60) : Colors.white.withOpacity(0.12),
                               ),
                             ),
                             child: Text(item,
                                 style: TextStyle(
-                                  color: isSel ? Colors.black : _txtW,
+                                  color: isSel ? _orange : _txtW,
                                   fontSize: 13,
-                                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
+                                  fontWeight: isSel ? FontWeight.w600 : FontWeight.w400,
                                 )),
                           ),
                         );
@@ -546,6 +736,12 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
             ]),
           )),
           _DoneButton(onTap: () => Navigator.pop(context, _sel)),
+          if (_isLoading)
+            const Positioned.fill(
+              child: Center(
+                child: CircularProgressIndicator(color: _orange),
+              ),
+            ),
         ])),
       ),
     );
@@ -569,9 +765,10 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
           const SizedBox(height: 16),
           _SheetAddBtn(onTap: () {
             final v = _ctrl.text.trim();
-            if (v.isNotEmpty && !_sel.contains(v)) setState(() => _sel.add(v));
-            _ctrl.clear();
-            Navigator.pop(ctx);
+            if (v.isNotEmpty) {
+              _addCustomAllergen(v);
+              _ctrl.clear();
+            }
           }),
         ]),
       ),
@@ -579,9 +776,7 @@ class _AllergiesScreenState extends State<AllergiesScreen> {
   }
 }
 
-// ============================================================
-//  MEDICATIONS SCREEN
-// ============================================================
+
 class MedicationsScreen extends StatefulWidget {
   final List<String> current;
   const MedicationsScreen({super.key, required this.current});
@@ -592,8 +787,30 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   late List<String> _items;
   final _searchCtrl = TextEditingController();
   final _manualCtrl = TextEditingController();
-  @override void initState() { super.initState(); _items = List.from(widget.current); }
-  @override void dispose() { _searchCtrl.dispose(); _manualCtrl.dispose(); super.dispose(); }
+  bool _isLoading = false;
+
+  @override void initState() {
+    super.initState();
+    _items = List.from(widget.current);
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    _manualCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _addMedication(String name) async {
+    setState(() => _isLoading = true);
+    final success = await MedicalAPIService.addMedication(name);
+    if (success && mounted) {
+      final newMedications = await MedicalAPIService.getMedications();
+      setState(() => _items = newMedications);
+    }
+    setState(() => _isLoading = false);
+    if (mounted) Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -603,7 +820,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
       child: Scaffold(
         backgroundColor: _bg,
         body: SafeArea(child: Column(children: [
-          _TopNav(title: p.tr('medications'), onBack: () => Navigator.pop(context)),
+          _TopNav(title: p.tr('medications'), onBack: () => Navigator.pop(context, _items)),
           Expanded(child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
             child: Column(children: [
@@ -615,7 +832,7 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
                 const SizedBox(height: 24),
               ] else ...[
                 const SizedBox(height: 20),
-                const _EmptyIllustration(centerIcon: Icons.medication_outlined),
+                const _EmptyIllustration(isDisease: false),
                 const SizedBox(height: 20),
                 const Text('Your medicine cabinet is\nempty',
                     textAlign: TextAlign.center,
@@ -638,6 +855,12 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
             ]),
           )),
           _DoneButton(onTap: () => Navigator.pop(context, _items)),
+          if (_isLoading)
+            const Positioned.fill(
+              child: Center(
+                child: CircularProgressIndicator(color: _orange),
+              ),
+            ),
         ])),
       ),
     );
@@ -661,9 +884,10 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
           const SizedBox(height: 16),
           _SheetAddBtn(onTap: () {
             final v = _manualCtrl.text.trim();
-            if (v.isNotEmpty) setState(() => _items.add(v));
-            _manualCtrl.clear();
-            Navigator.pop(ctx);
+            if (v.isNotEmpty) {
+              _addMedication(v);
+              _manualCtrl.clear();
+            }
           }),
         ]),
       ),
@@ -671,9 +895,6 @@ class _MedicationsScreenState extends State<MedicationsScreen> {
   }
 }
 
-// ============================================================
-//  DISEASES SCREEN
-// ============================================================
 class DiseasesScreen extends StatefulWidget {
   final List<String> current;
   const DiseasesScreen({super.key, required this.current});
@@ -684,8 +905,30 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
   late List<String> _items;
   final _searchCtrl = TextEditingController();
   final _manualCtrl = TextEditingController();
-  @override void initState() { super.initState(); _items = List.from(widget.current); }
-  @override void dispose() { _searchCtrl.dispose(); _manualCtrl.dispose(); super.dispose(); }
+  bool _isLoading = false;
+
+  @override void initState() {
+    super.initState();
+    _items = List.from(widget.current);
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    _manualCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _addDisease(String name) async {
+    setState(() => _isLoading = true);
+    final success = await MedicalAPIService.addChronicDisease(name);
+    if (success && mounted) {
+      final newDiseases = await MedicalAPIService.getChronicDiseases();
+      setState(() => _items = newDiseases);
+    }
+    setState(() => _isLoading = false);
+    if (mounted) Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -695,7 +938,7 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
       child: Scaffold(
         backgroundColor: _bg,
         body: SafeArea(child: Column(children: [
-          _TopNav(title: p.tr('diseases'), onBack: () => Navigator.pop(context)),
+          _TopNav(title: p.tr('diseases'), onBack: () => Navigator.pop(context, _items)),
           Expanded(child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
             child: Column(children: [
@@ -707,7 +950,7 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
                 const SizedBox(height: 24),
               ] else ...[
                 const SizedBox(height: 20),
-                const _EmptyIllustration(centerIcon: Icons.health_and_safety_outlined),
+                const _EmptyIllustration(isDisease: true),
                 const SizedBox(height: 20),
                 const Text('Your disease list is\nempty',
                     textAlign: TextAlign.center,
@@ -729,8 +972,13 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
               const SizedBox(height: 24),
             ]),
           )),
-          // Done → back to MedicalProfile (Continue button there → /home)
           _DoneButton(onTap: () => Navigator.pop(context, _items)),
+          if (_isLoading)
+            const Positioned.fill(
+              child: Center(
+                child: CircularProgressIndicator(color: _orange),
+              ),
+            ),
         ])),
       ),
     );
@@ -754,9 +1002,10 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
           const SizedBox(height: 16),
           _SheetAddBtn(onTap: () {
             final v = _manualCtrl.text.trim();
-            if (v.isNotEmpty) setState(() => _items.add(v));
-            _manualCtrl.clear();
-            Navigator.pop(ctx);
+            if (v.isNotEmpty) {
+              _addDisease(v);
+              _manualCtrl.clear();
+            }
           }),
         ]),
       ),
@@ -764,9 +1013,6 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
   }
 }
 
-// ============================================================
-//  SMALL REUSABLE WIDGETS
-// ============================================================
 
 class _ItemChip extends StatelessWidget {
   final String label; final VoidCallback onDelete;
