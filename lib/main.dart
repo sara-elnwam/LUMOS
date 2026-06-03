@@ -34,7 +34,8 @@ class AppStrings {
       'pos_tl': 'Top left, Left Hand Sensor',
       'pos_tr': 'Top right, Right Hand Sensor',
       'pos_bl': 'Bottom left, Left Leg Sensor',
-      'pos_br': 'Bottom right, Right Leg Sensor',      'bracelets': 'Bracelets',
+      'pos_br': 'Bottom right, Right Leg Sensor',
+      'bracelets': 'Bracelets',
       'show_bracelets': 'Show {count} bracelets',
       'lumo_band': 'Lumo Band',
       'earbuds': 'Earbuds',
@@ -147,7 +148,6 @@ class AppStrings {
       'gesture_detected_s': 'Sign up detected. Opening registration.',
       'gesture_detected_l': 'Sign in detected. Opening login.',
       'shake_help': 'You are on {screen}. {hint}',
-
       'screen_curtain_on': 'Screen curtain on. Display is now private.',
       'screen_curtain_off': 'Screen curtain off.',
       'home_welcome': 'Welcome back, {name}. You have 4 devices connected. Hold anywhere to speak.',
@@ -187,6 +187,12 @@ class AppStrings {
       'prompt_heard_nothing': 'Nothing heard. Long-press to try again.',
       'prompt_password_chars': 'Password with {n} characters.',
       'prompt_confirm_entry': 'You entered: {value}. Tap once to confirm. Double-tap to redo.',
+      // New keys for Wizard Mode
+      'saved': 'Saved',
+      'field_required': 'This field is required',
+      'press_and_hold_to_speak': 'Press and hold to speak',
+      'tap_to_confirm_double_to_redo': 'Tap once to confirm, double tap to redo',
+      'prompt_try_again': 'Please try again',
       // Biometrics Keys
       'biometrics_title': 'Set up Biometrics',
       'biometrics_instruction': 'Let\'s set up your fingerprint. You\'ll scan your finger 4 times — it only takes a moment.',
@@ -213,7 +219,6 @@ class AppStrings {
       'biometrics_status_failed': 'Failed ✗',
       'biometrics_status_unavailable': 'Unavailable',
       'biometrics_status_ready': 'Ready',
-
       'biometrics_done_button': 'DONE',
       'biometrics_done_button_label': 'Done. All biometrics setup complete. Tap to go home',
       'biometrics_skip_button': 'Skip for now',
@@ -227,7 +232,6 @@ class AppStrings {
       'biometrics_place_finger': 'Place your finger on the sensor',
       'voice_tap_instruction': 'Tap right for {male}. Tap left for {female}. Double tap to confirm your choice.',
       'swipe_hint_visual': 'Swipe up for Voice · Swipe down for Manual',
-
     },
     'ar': {
       'bracelets': 'الأساور',
@@ -267,7 +271,6 @@ class AppStrings {
       'speak': 'تكلم...',
       'didnt_hear_anything': 'لم أسمع شيئاً، حاول مرة أخرى',
       'technical_error': 'خطأ تقني: {error}',
-
       'voice_tap_instruction': 'اضغط يميناً  {male}. اضغط شمالاً  {female}. اضغط مرتين للتأكيد.',
       'swipe_hint_visual': 'اسحب لأعلى للصوتي · اسحب لأسفل لليدوي',
       'choose_language': 'اختر اللغة',
@@ -385,7 +388,13 @@ class AppStrings {
       'prompt_heard_nothing': 'لم أسمع شيئاً. اضغط مطولاً للمحاولة مرة أخرى.',
       'prompt_password_chars': 'كلمة مرور من {n} حرف.',
       'prompt_confirm_entry': 'دخلت: {value}. ضغطة للتأكيد. ضغطتين للإعادة.',
-      // مفاتيح البصمة
+      // New keys for Wizard Mode
+      'saved': 'تم الحفظ',
+      'field_required': 'هذا الحقل مطلوب',
+      'press_and_hold_to_speak': 'اضغط مطولاً للتحدث',
+      'tap_to_confirm_double_to_redo': 'ضغطة للتأكيد، ضغطتين للإعادة',
+      'prompt_try_again': 'حاول مرة أخرى',
+      // Biometrics Keys
       'biometrics_title': 'إعداد البصمة',
       'biometrics_instruction': 'أهلاً بك في إعداد البصمة. ستحتاج إلى مسح إصبعك أربع مرات. سنرشدك خطوة بخطوة.',
       'biometrics_scan_start': 'بدء المسح {current} من {total}. ضع إصبعك على المستشعر.',
@@ -406,7 +415,6 @@ class AppStrings {
       'biometrics_error_permanent': 'تم قفل البصمة. استخدم رقم PIN الخاص بجهازك.',
       'biometrics_error_default': 'حدث خطأ ما. حاول مرة أخرى.',
       'biometrics_status_scanning': 'جارٍ المسح...',
-
       'biometrics_status_lift': 'ارفع إصبعك ↑',
       'biometrics_status_success': 'تم التحقق ✓',
       'biometrics_status_failed': 'فشل المسح ✗',
@@ -438,7 +446,6 @@ class AppStrings {
       'pos_bl': 'أسفل اليسار، حساس القدم اليسرى',
       'pos_br': 'أسفل اليمين، حساس القدم اليمنى',
     },
-
     'es': {
       'tap_toggle_to_change': 'Toque el interruptor para cambiar el estado',
       'code_sent_to_email': 'Código de verificación enviado a su correo electrónico',
@@ -608,6 +615,12 @@ class AppStrings {
       'prompt_heard_nothing': 'No escuché nada. Mantén presionado para intentar de nuevo.',
       'prompt_password_chars': 'Contraseña con {n} caracteres.',
       'prompt_confirm_entry': 'Ingresaste: {value}. Toca para confirmar. Doble toque para rehacer.',
+      // New keys for Wizard Mode
+      'saved': 'Guardado',
+      'field_required': 'Este campo es obligatorio',
+      'press_and_hold_to_speak': 'Mantén presionado para hablar',
+      'tap_to_confirm_double_to_redo': 'Toca una vez para confirmar, dos veces para repetir',
+      'prompt_try_again': 'Por favor, inténtalo de nuevo',
       // Biometrics Keys
       'biometrics_title': 'Configurar Biometría',
       'biometrics_instruction': 'Bienvenido a la configuración de biometría. Necesitarás escanear tu huella digital 4 veces. Sigue las instrucciones.',
@@ -813,6 +826,12 @@ class AppStrings {
       'prompt_heard_nothing': 'Rien entendu. Appuyez longuement pour réessayer.',
       'prompt_password_chars': 'Mot de passe de {n} caractères.',
       'prompt_confirm_entry': 'Vous avez dit: {value}. Appuyez pour confirmer. Double appui pour refaire.',
+      // New keys for Wizard Mode
+      'saved': 'Enregistré',
+      'field_required': 'Ce champ est requis',
+      'press_and_hold_to_speak': 'Appuyez longuement pour parler',
+      'tap_to_confirm_double_to_redo': 'Appuyez une fois pour confirmer, deux fois pour refaire',
+      'prompt_try_again': 'Veuillez réessayer',
       // Biometrics Keys
       'biometrics_title': 'Configurer la biométrie',
       'biometrics_instruction': 'Bienvenue dans la configuration biométrique. Vous devrez scanner votre empreinte digitale 4 fois. Suivez les instructions.',
@@ -1014,6 +1033,12 @@ class AppStrings {
       'prompt_heard_nothing': 'Nichts gehört. Lange drücken um es erneut zu versuchen.',
       'prompt_password_chars': 'Passwort mit {n} Zeichen.',
       'prompt_confirm_entry': 'Eingegeben: {value}. Tippen zum Bestätigen. Doppeltippen zum Wiederholen.',
+      // New keys for Wizard Mode
+      'saved': 'Gespeichert',
+      'field_required': 'Dieses Feld ist erforderlich',
+      'press_and_hold_to_speak': 'Gedrückt halten zum Sprechen',
+      'tap_to_confirm_double_to_redo': 'Einmal tippen zum Bestätigen, zweimal zum Wiederholen',
+      'prompt_try_again': 'Bitte versuchen Sie es erneut',
       // Biometrics Keys
       'biometrics_title': 'Biometrie einrichten',
       'biometrics_instruction': 'Willkommen bei der Biometrie-Einrichtung. Sie müssen Ihren Fingerabdruck 4 Mal scannen. Folgen Sie den Anweisungen.',
@@ -1225,6 +1250,12 @@ class AppStrings {
       'prompt_heard_nothing': '何も聞こえませんでした。長押しして再試行してください。',
       'prompt_password_chars': '{n}文字のパスワード。',
       'prompt_confirm_entry': '入力: {value}。確認はタップ。やり直しはダブルタップ。',
+      // New keys for Wizard Mode
+      'saved': '保存しました',
+      'field_required': 'このフィールドは必須です',
+      'press_and_hold_to_speak': '長押しして話す',
+      'tap_to_confirm_double_to_redo': 'タップで確定、ダブルタップでやり直し',
+      'prompt_try_again': 'もう一度お試しください',
       // Biometrics Keys
       'biometrics_title': '生体認証を設定',
       'biometrics_instruction': '生体認証設定へようこそ。指紋スキャンを4回行う必要があります。指示に従ってください。',
@@ -1357,7 +1388,7 @@ class LocaleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Setters ---
+
   void setLocale(String code) {
     _langCode = code;
     _saveLang(code);
@@ -1446,7 +1477,6 @@ class LocaleProvider extends ChangeNotifier {
     await prefs.setBool('isFirstTime', value);
   }
 
-// داخل class LocaleProvider
   Future<void> _saveVoiceDisabled(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('voiceDisabled', value);
@@ -1460,8 +1490,6 @@ class LumosVoiceService {
   final FlutterTts  _tts = FlutterTts();
   final SpeechToText _stt = SpeechToText();
   bool _sttInitialized = false;
-
-  // متغيرات جديدة للتسجيل المستمر
   Completer<String>? _listenCompleter;
   String _currentPartialText = '';
   Timer? _silenceTimer;
@@ -1481,7 +1509,6 @@ class LumosVoiceService {
       await _tts.setSpeechRate(gender == 'male' ? 0.44 : 0.48);
       await _tts.setPitch(gender == 'female' ? 1.15 : 0.60);
 
-      // ✅ استنّى TTS ينتهي فعلياً قبل ما الدالة تكمل
       final completer = Completer<void>();
       _tts.setCompletionHandler(() {
         if (!completer.isCompleted) completer.complete();
@@ -1506,7 +1533,6 @@ class LumosVoiceService {
     _isListening = false;
     _silenceTimer?.cancel();
   }
-// في main.dart - داخل class LumosVoiceService
   Future<void> startListening({
     String lang = 'en',
     void Function(String partial)? onPartial,
@@ -1537,11 +1563,7 @@ class LumosVoiceService {
               onPartial(result.recognizedWords);
             }
           }
-
-          // ✅ مهم جداً: ما توقفش التسجيل عند أول finalResult
-          // خلينا نستنى المستخدم يخلص كلامه
           if (result.finalResult && _listenCompleter != null && !_listenCompleter!.isCompleted) {
-            // ✅ ما نكملش علطول - نستنى شوية عشان لو لسه فيه كلام
             _silenceTimer?.cancel();
             _silenceTimer = Timer(const Duration(milliseconds: 1500), () {
               if (_listenCompleter != null && !_listenCompleter!.isCompleted) {
@@ -1554,8 +1576,8 @@ class LumosVoiceService {
             });
           }
         },
-        listenFor: const Duration(seconds: 20), // ✅ أطول - 20 ثانية
-        pauseFor: const Duration(seconds: 5),   // ✅ أطول - 5 ثواني بين الكلام
+        listenFor: const Duration(seconds: 20),
+        pauseFor: const Duration(seconds: 5),
         cancelOnError: false,
       );
     } catch (e) {
@@ -1565,7 +1587,6 @@ class LumosVoiceService {
     }
   }
 
-  // الدالة الجديدة stopListening
   Future<String> stopListening() async {
     _silenceTimer?.cancel();
     await _stt.stop();
@@ -1582,7 +1603,6 @@ class LumosVoiceService {
     return result;
   }
 
-  // الدالة القديمة listen - نحتفظ بها للتوافق
   Future<String> listen({
     String lang = 'en',
     void Function(String partial)? onPartial,
@@ -1745,7 +1765,7 @@ class LumosApp extends StatelessWidget {
         '/sign-up':        (_) => const SignUpScreen(),
         '/sign-in':        (_) => const SignInScreen(),
         '/forgot-password':(_) => const ForgotPasswordScreen(),
-        '/verify-code':    (_) => const VerifyCodeScreen(email: ''),  // 🟢 أضيفي هذا السطر
+        '/verify-code':    (_) => const VerifyCodeScreen(email: ''),
         '/reset-password': (_) => const ResetPasswordScreen(),
         '/medical-profile':(_) => const MedicalProfileScreen(),
         '/biometrics':     (_) => const BiometricsScreen(),
@@ -1882,41 +1902,6 @@ class _LumosLogoFallback extends StatelessWidget {
     );
   }
 }
-// ─────────────────────────────────────────────────────────────────────────────
-//  ModeSelectScreen — Optimized for Blind Users
-//  • Clear voice instructions with position (above = Voice, below = Manual)
-//  • Official eye icon from assets
-//  • Full RTL/LTR + Localization for all 6 languages
-//  • Enhanced haptics and semantics
-//  • Large touch targets
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-//  ModeSelectScreen — For Blind Users (Pure Voice + Touch)
-//  • No text on screen at all
-//  • No arrows, no checkmarks, no circles
-//  • Only logo + large touch cards
-//  • Full voice instructions (swipe up = voice mode, swipe down = manual mode)
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-//  ModeSelectScreen — Clean & Simple for Blind Users
-//  • Each box: icon + short label فقط
-//  • No arrows, no checkmarks, no circles
-//  • Instructions purely by voice (up = voice, down = manual)
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-//  ModeSelectScreen — Clean & Simple for Blind Users
-//  • Wider boxes (horizontal: 12 only)
-//  • Each box: icon + short label
-//  • No arrows, no checkmarks, no circles
-//  • Instructions purely by voice (up = voice, down = manual)
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-//  ModeSelectScreen — Clean & Simple for Blind Users
-//  • Wider boxes (horizontal: 12)
-//  • Each box: icon + short label
-//  • Added subtitle line under logo
-//  • No arrows, no checkmarks, no circles
-// ─────────────────────────────────────────────────────────────────────────────
 
 class ModeSelectScreen extends StatefulWidget {
   const ModeSelectScreen({super.key});
@@ -1962,7 +1947,6 @@ class _ModeSelectScreenState extends State<ModeSelectScreen>
     final String voiceMode = p.tr('voice_mode_short');
     final String manualMode = p.tr('manual_mode_short');
 
-    // نطق الجملة الترحيبية + الإرشادات
     await LumosVoiceService.instance.speak(
       p.tr('welcome_choice') + ' ' +
           p.fill('swipe_instruction', {'voice': voiceMode, 'manual': manualMode}),
@@ -2110,8 +2094,6 @@ class _ModeSelectScreenState extends State<ModeSelectScreen>
                       ),
 
                       const SizedBox(height: 8),
-
-                      // 👇 الجملة الجديدة تحت لوموس
                       Text(
                         p.tr('welcome_choice'),
                         textAlign: TextAlign.center,
@@ -2124,14 +2106,11 @@ class _ModeSelectScreenState extends State<ModeSelectScreen>
                       ),
 
                       const SizedBox(height: 28),
-
-                      // TWO BOXES - WIDER (horizontal: 12)
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Column(
                             children: [
-                              // TOP BOX - Voice Mode
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () => _selectMode(true),
@@ -2172,8 +2151,6 @@ class _ModeSelectScreenState extends State<ModeSelectScreen>
                               ),
 
                               const SizedBox(height: 16),
-
-                              // BOTTOM BOX - Manual Mode
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () => _selectMode(false),
@@ -2218,8 +2195,6 @@ class _ModeSelectScreenState extends State<ModeSelectScreen>
                       ),
 
                       const SizedBox(height: 20),
-
-                      // ── Swipe hint (visual label for sighted users) ──
                       Padding(
                         padding: const EdgeInsets.only(bottom: 24),
                         child: Row(
@@ -2251,7 +2226,6 @@ class _ModeSelectScreenState extends State<ModeSelectScreen>
     );
   }
 }
-// ─────────────────────────────────────────────────────────────────────────────
 class _Lang {
   final String name, code;
   final bool isDefault;
@@ -2347,16 +2321,11 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen>
         _sel = lang.code;
         _currentReadingCode = lang.code;
       });
-
-      // ✅ ننطق اسم اللغة بلسان اللغة نفسها مش بلسان المستخدم
-      // speak() هتستنّى لحد ما TTS يخلص فعلياً قبل ما تكمل
       await LumosVoiceService.instance.speak(
         lang.name,
-        lang: lang.code,  // French يقرأها بفرنسي، العربي بالعربي، إلخ
+        lang: lang.code,
         gender: p.voiceGender,
       );
-
-      // pause صغيرة بين اللغات عشان الكلام ما يلتصقش ببعض
       if (mounted && _isReadingLangs) {
         await Future.delayed(const Duration(milliseconds: 600));
       }
@@ -2596,7 +2565,6 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen>
     final String maleVoice = p.tr('male_voice');
     final String femaleVoice = p.tr('female_voice');
 
-    // إرشادات صوتية: اضغط يمين للولد، شمال للبنت
     await LumosVoiceService.instance.speak(
       p.fill('voice_tap_instruction', {
         'male': maleVoice,
@@ -2611,7 +2579,6 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen>
     if (_navigating) return;
     final p = context.read<LocaleProvider>();
 
-    // إذا كان في انتظار التأكيد ونفس الصوت المختار -> تأكيد
     if (_awaitingConfirm && _sel == gender) {
       _navigating = true;
       setState(() => _awaitingConfirm = false);
@@ -2644,14 +2611,9 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen>
   @override
   Widget build(BuildContext context) {
     final p = context.watch<LocaleProvider>();
-    // RTL: اليمين = right, اليسار = left (في RTL اليمين هو الـ start)
     final isRTL = p.isRTL;
-
-    // ترتيب البطاقات:
-    // في RTL (العربية): اليمين معناه start (الكارت الأول)
-    // في LTR (الإنجليزية): اليمين معناه end (الكارت الثاني)
-    final maleAtRight = !isRTL;  // في LTR الولد على اليمين
-    final femaleAtRight = isRTL; // في RTL البنت على اليمين
+    final maleAtRight = !isRTL;
+    final femaleAtRight = isRTL;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1E110A),
@@ -2660,13 +2622,12 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen>
         child: GestureDetector(
           onHorizontalDragEnd: (d) {
             if (d.primaryVelocity == null) return;
-            // سحب لليمين أو لليسار حسب RTL/LTR
             if (isRTL) {
-              if (d.primaryVelocity! < -200) _selectVoice('female');  // سحب لشمال (في RTL شمال = بنت)
-              if (d.primaryVelocity! > 200) _selectVoice('male');     // سحب ليمين (في RTL يمين = ولد)
+              if (d.primaryVelocity! < -200) _selectVoice('female');
+              if (d.primaryVelocity! > 200) _selectVoice('male');
             } else {
-              if (d.primaryVelocity! < -200) _selectVoice('male');     // سحب لشمال (في LTR شمال = ولد)
-              if (d.primaryVelocity! > 200) _selectVoice('female');    // سحب ليمين (في LTR يمين = بنت)
+              if (d.primaryVelocity! < -200) _selectVoice('male');
+              if (d.primaryVelocity! > 200) _selectVoice('female');
             }
           },
           child: SafeArea(
@@ -2691,9 +2652,6 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen>
                         height: 350,
                         child: Row(
                           children: [
-                            // البطاقة الأولى (تظهر حسب RTL/LTR)
-                            // في LTR: الأول = شمال (بنت)
-                            // في RTL: الأول = يمين (ولد)
                             Expanded(
                               child: _VoiceCard(
                                 label: isRTL ? p.tr('male_voice') : p.tr('female_voice'),
@@ -2708,9 +2666,6 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen>
                               ),
                             ),
                             const SizedBox(width: 16),
-                            // البطاقة الثانية (تظهر حسب RTL/LTR)
-                            // في LTR: الثاني = يمين (ولد)
-                            // في RTL: الثاني = شمال (بنت)
                             Expanded(
                               child: _VoiceCard(
                                 label: isRTL ? p.tr('female_voice') : p.tr('male_voice'),
@@ -2806,7 +2761,6 @@ class _VoiceCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // اسم الصوت وأيقونات
               Positioned(
                 bottom: 60, left: 12, right: 12,
                 child: Column(
@@ -2858,9 +2812,7 @@ class _VoiceCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  5. GET STARTED SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
+
 const Color _lumosOrange       = Color(0xFFC56C16);
 const Color _lumosOrangeBorder = Color(0xFFFF6A00);
 const Color _cardDark          = Color(0xFF140F0A);
@@ -2923,8 +2875,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onVerticalDragEnd: (details) {
-              // سحب لفوق  → إنشاء حساب
-              // سحب لتحت → لدي حساب
+
               if (details.primaryVelocity == null) return;
               if (details.primaryVelocity! < -200) {
                 _goSignUp();
@@ -2944,7 +2895,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                     ),
                   ),
                 ),
-                // النصف الأعلى → sign-up
+
                 Positioned(
                   top: 0, left: 0, right: 0,
                   bottom: MediaQuery.of(context).size.height / 2,
@@ -2954,7 +2905,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                     child: const SizedBox.expand(),
                   ),
                 ),
-                // النصف الأسفل → sign-in
+
                 Positioned(
                   top: MediaQuery.of(context).size.height / 2,
                   left: 0, right: 0, bottom: 0,
@@ -2964,7 +2915,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                     child: const SizedBox.expand(),
                   ),
                 ),
-                // الكارتين
+
                 Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -2984,11 +2935,11 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                   ),
                 ),
               ],
-            ),        // Stack
-          ),        // GestureDetector (swipe)
-        ),          // FadeTransition
-      ),            // Scaffold
-    );              // Directionality
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -3032,9 +2983,6 @@ class _GetStartedButton extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  SHARED UI HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
 class _PulsingDot extends StatefulWidget {
   final Color color;
   const _PulsingDot({required this.color});
@@ -3072,9 +3020,6 @@ class _PulsingDotState extends State<_PulsingDot>
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  UNUSED LEGACY HELPERS (kept for backward compat)
-// ─────────────────────────────────────────────────────────────────────────────
 enum _ArrowDirection { up, down }
 
 Widget _buildActionButton({

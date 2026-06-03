@@ -82,7 +82,6 @@ class _BraceletsListScreenState extends State<BraceletsListScreen> {
       'pos_br': '右下、右足センサー',
     },
   };
-  // الترتيب هنا: يسار، يمين، يسار، يمين
   final List<Map<String, dynamic>> _sensors = [
     {'key': 'lh', 'pos': 'pos_tl', 'connected': true},
     {'key': 'rh', 'pos': 'pos_tr', 'connected': true},
@@ -114,7 +113,6 @@ class _BraceletsListScreenState extends State<BraceletsListScreen> {
     await flutterTts.speak(speechText);
   }
 
-  // ... (نفس تعريفات الـ List والـ Translations)
 
   @override
   Widget build(BuildContext context) {
@@ -132,22 +130,17 @@ class _BraceletsListScreenState extends State<BraceletsListScreen> {
               fit: BoxFit.cover,
             ),
           ),
-// ... داخل الـ build function
           SafeArea(
             child: Column(
               children: [
                 _buildHeader(isRtl, currentLang),
-
-                // المسافة قبل أول صف (اليدين) - خليها زي ما هي لو مكانهم صح
                 const SizedBox(height: 110),
-
                 Directionality(
                   textDirection: TextDirection.ltr,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: Column(
                       children: [
-                        // صف اليدين (المستوى العلوي)
                         Row(
                           children: [
                             Expanded(child: _sensorItem(0, currentLang)),
@@ -155,12 +148,7 @@ class _BraceletsListScreenState extends State<BraceletsListScreen> {
                             Expanded(child: _sensorItem(1, currentLang)),
                           ],
                         ),
-
-                        // ********* هنا السر *********
-                        // زودي الرقم ده (مثلاً من 50 لـ 80 أو 100) عشان تنزلي "الرجلين" بس لتحت
                         const SizedBox(height: 108),
-
-                        // صف القدمين (المستوى السفلي)
                         Row(
                           children: [
                             Expanded(child: _sensorItem(2, currentLang)),
@@ -186,10 +174,9 @@ class _BraceletsListScreenState extends State<BraceletsListScreen> {
       behavior: HitTestBehavior.opaque,
       onTap: () => _handleTap(index, lang),
       onDoubleTap: () {
-        debugPrint("Double tap detected on sensor $index"); // للتأكد في الـ Console
+        debugPrint("Double tap detected on sensor $index");
         Navigator.of(context).pop();
       },
-
       child: Container(
         height: 150,
         width: double.infinity,

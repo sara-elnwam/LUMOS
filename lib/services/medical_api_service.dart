@@ -15,7 +15,46 @@ class MedicalAPIService {
     };
   }
 
-  // ==================== MEDICAL PROFILE ====================
+
+  static Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/Account/change-password'),
+        headers: {
+          ...await _getAuthHeaders(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+          'confirmPassword': newPassword,
+        }),
+      );
+
+      debugPrint('[ChangePassword] Status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        debugPrint('[ChangePassword] Password changed successfully');
+        return true;
+      } else if (response.statusCode == 400) {
+        debugPrint('[ChangePassword] Bad request: ${response.body}');
+        return false;
+      } else if (response.statusCode == 401) {
+        debugPrint('[ChangePassword] Unauthorized - token may be invalid');
+        return false;
+      } else {
+        debugPrint('[ChangePassword] Error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('[ChangePassword] Exception: $e');
+      return false;
+    }
+  }
+
 
   static Future<Map<String, dynamic>?> getMedicalProfile() async {
     try {
@@ -67,8 +106,6 @@ class MedicalAPIService {
     }
   }
 
-  // ==================== ALLERGIES ====================
-
   static Future<List<String>> getAllergies() async {
     try {
       final response = await http.get(
@@ -103,7 +140,6 @@ class MedicalAPIService {
     }
   }
 
-  // ==================== MEDICATIONS ====================
 
   static Future<List<String>> getMedications() async {
     try {
@@ -139,7 +175,6 @@ class MedicalAPIService {
     }
   }
 
-  // ==================== CHRONIC DISEASES ====================
 
   static Future<List<String>> getChronicDiseases() async {
     try {
@@ -175,7 +210,6 @@ class MedicalAPIService {
     }
   }
 
-  // ==================== HELPER MAPPING ====================
 
   static int genderToInt(String? gender) {
     if (gender == null) return 0;

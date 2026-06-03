@@ -345,20 +345,20 @@ class _HomeScreenState extends State<HomeScreen>
         final data = jsonDecode(response.body);
         final answer = data['candidates']?[0]?['content']?['parts']?[0]?['text'];
         if (answer != null && answer.isNotEmpty) {
-          debugPrint('[Gemini] ✅ Success! Response: $answer');
+          debugPrint('[Gemini]  Success! Response: $answer');
           return answer;
         }
       }
 
       if (response.statusCode == 429) {
-        debugPrint('[Gemini] ⚠️ Rate limit exceeded');
+        debugPrint('[Gemini]  Rate limit exceeded');
         return p.langCode == 'ar'
             ? 'وصلت للحد الأقصى من الطلبات. انتظر دقيقة ثم حاول مرة أخرى.'
             : 'Rate limit reached. Please wait a minute.';
       }
 
       if (response.statusCode == 403 || response.statusCode == 401) {
-        debugPrint('[Gemini] ❌ Authentication failed - Key may be invalid');
+        debugPrint('[Gemini]  Authentication failed - Key may be invalid');
         return p.langCode == 'ar'
             ? 'مشكلة في مفتاح API. يرجى تحديث المفتاح.'
             : 'API key issue. Please update your key.';
@@ -372,7 +372,7 @@ class _HomeScreenState extends State<HomeScreen>
           ? 'الإنترنت بطيء، حاول مرة أخرى.'
           : 'Internet is slow, please try again.';
     } catch (e) {
-      debugPrint('[Gemini] ❌ Error: $e');
+      debugPrint('[Gemini] Error: $e');
     }
 
     return p.langCode == 'ar'

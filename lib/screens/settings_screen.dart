@@ -1,7 +1,4 @@
 // lib/screens/settings_screen.dart
-// ════════════════════════════════════════════════════════════
-//  SETTINGS SCREEN  — FULL LOCALIZATION
-// ════════════════════════════════════════════════════════════
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -9,14 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../main.dart' show LocaleProvider, LumosVoiceService, LumosHaptics, ShakeDetector, AppStrings;
 
-// ── Colors ─────────────────────────────────────────────────
 const _bg     = Color(0xFF0D0A07);
 const _orange = Color(0xFFF27F0D);
 const _card   = Color(0xFF1A1008);
 const _txtW   = Color(0xFFF1F5F9);
 const _txtG   = Color(0xFF94A3B8);
 
-// ════════════════════════════════════════════════════════════
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
   @override
@@ -182,9 +177,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  PROFILE BOTTOM SHEET
-// ════════════════════════════════════════════════════════════
 class _ProfileSheet extends StatelessWidget {
   const _ProfileSheet();
 
@@ -252,7 +244,6 @@ class _ProfileSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          // User info card - get from provider/user storage
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             child: Container(
@@ -298,9 +289,7 @@ class _ProfileSheet extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  PROFILE CARD
-// ════════════════════════════════════════════════════════════
+
 class _ProfileCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -336,9 +325,6 @@ class _ProfileCard extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  SECTION GROUP
-// ════════════════════════════════════════════════════════════
 class _SectionGroup extends StatelessWidget {
   final List<Widget> children;
   const _SectionGroup({required this.children});
@@ -356,9 +342,7 @@ class _SectionGroup extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  SETTINGS TILE
-// ════════════════════════════════════════════════════════════
+
 class _SettingsTile extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -403,9 +387,6 @@ class _SettingsTile extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  SETTINGS TILE SWITCH
-// ════════════════════════════════════════════════════════════
 class _SettingsTileSwitch extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -439,9 +420,7 @@ class _SettingsTileSwitch extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  DIVIDER
-// ════════════════════════════════════════════════════════════
+
 class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -452,9 +431,7 @@ class _Divider extends StatelessWidget {
   }
 }
 
-// ════════════════════════════════════════════════════════════
-//  BOTTOM NAVIGATION
-// ════════════════════════════════════════════════════════════
+
 class _SettingsBottomNav extends StatelessWidget {
   final VoidCallback onProfileTap;
   final LocaleProvider p;

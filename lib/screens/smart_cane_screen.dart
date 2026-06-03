@@ -62,7 +62,6 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // 1. الصورة الخلفية
             Positioned.fill(
               child: Image.asset(
                 'assets/images/CANE.png',
@@ -71,7 +70,6 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
               ),
             ),
 
-            // 2. التدرج اللوني
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -89,8 +87,6 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
                 ),
               ),
             ),
-
-            // 3. طبقة مخفية للـ TTS والعودة للهوم
             Positioned.fill(
               child: Material(
                 color: Colors.transparent,
@@ -104,8 +100,6 @@ class _SmartCaneScreenState extends State<SmartCaneScreen>
                 ),
               ),
             ),
-
-            // 4. العناصر التفاعلية (الكارد)
             SafeArea(
               child: Column(
                 children: [

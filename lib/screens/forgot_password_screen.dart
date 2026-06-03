@@ -168,8 +168,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     }
   }
 
-  // ==================== API CALL ====================
-
   Future<void> _sendResetLink() async {
     final p = context.read<LocaleProvider>();
     final email = _emailCtrl.text.trim();
@@ -181,8 +179,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       await _speak(_error!);
       return;
     }
-
-    // Basic email validation
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
         _error = AppStrings.get(p.langCode, 'invalid_email_format');
@@ -190,13 +186,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       await _speak(_error!);
       return;
     }
-
     setState(() {
       _isLoading = true;
       _error = null;
       _isSuccess = false;
     });
-
     try {
       final response = await http.post(
         Uri.parse('http://lumos-api.runasp.net/api/Account/forgot-password'),
@@ -240,7 +234,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       await _speak(_error!);
     }
   }
-  // ==================== BUILD ====================
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +262,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Background
+
                 Positioned.fill(
                   child: Image.asset(
                     'assets/images/lumos_background.png',
@@ -300,7 +293,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     ),
                   ),
                 ),
-                // Main Content
                 Center(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 40),
@@ -372,7 +364,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             ),
                           ),
                           const SizedBox(height: 32),
-                          // Email Field
+
                           Text(
                             AppStrings.get(p.langCode, 'email'),
                             style: const TextStyle(
@@ -427,7 +419,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             ),
                           ],
                           const SizedBox(height: 28),
-                          // Send Button
                           SizedBox(
                             width: double.infinity,
                             height: 48,
@@ -461,7 +452,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Back to Sign In
                           Center(
                             child: GestureDetector(
                               onTap: () => Navigator.of(context).pop(),
@@ -521,7 +511,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   }
 }
 
-// ==================== GLASS FIELD WIDGET ====================
 
 class _GlassField extends StatelessWidget {
   final TextEditingController controller;

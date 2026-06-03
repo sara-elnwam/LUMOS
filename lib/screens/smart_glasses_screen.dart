@@ -51,7 +51,6 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // 1. صورة الخلفية
             Positioned.fill(
               child: Image.asset(
                 'assets/images/Smart_Glasses.png',
@@ -60,8 +59,6 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
                 errorBuilder: (_, __, ___) => Container(color: _bg),
               ),
             ),
-
-            // 2. التدرج اللوني (Overlay)
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
@@ -78,8 +75,6 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
                 ),
               ),
             ),
-
-            // 3. الطبقة الشفافة لالتقاط الضغط مرتين للعودة للهوم
             Positioned.fill(
               child: Material(
                 color: Colors.transparent,
@@ -94,8 +89,6 @@ class _SmartGlassesScreenState extends State<SmartGlassesScreen>
                 ),
               ),
             ),
-
-            // 4. المحتوى التفاعلي (Card)
             SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

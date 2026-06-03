@@ -43,7 +43,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
   late final Animation<double> _fade;
   late final ShakeDetector _shake;
 
-  // Voice flow variables
   int _currentIdx = 0;
   bool _awaitConfirm = false;
   bool _flowActive = false;
@@ -51,7 +50,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
   Timer? _recordingTimer;
   String _currentPartialText = '';
 
-  // ✅ Field definitions (3 fields)
   final List<Map<String, dynamic>> _fields = [
     {'label': 'email', 'hint': 'enter_email', 'isPassword': false},
     {'label': 'new_password', 'hint': 'create_password', 'isPassword': true},
@@ -69,7 +67,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     _shake = ShakeDetector(onShake: _onShake);
     _shake.start();
 
-    // Pre-fill email and token if passed
     if (widget.email != null) _emailCtrl.text = widget.email!;
     _token = widget.token;
 
@@ -85,7 +82,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     super.dispose();
   }
 
-  // ==================== VOICE FLOW ====================
 
   Future<void> _startFlow() async {
     if (!mounted) return;
@@ -224,7 +220,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     }
   }
 
-  // ==================== VALIDATION + API ====================
 
   bool _validateAndReset() {
     final p = context.read<LocaleProvider>();
@@ -343,7 +338,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
     }
   }
 
-  // ==================== BUILD ====================
 
   @override
   Widget build(BuildContext context) {
@@ -475,8 +469,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                             ),
                           ),
                           const SizedBox(height: 32),
-                          // ✅ Dynamic Fields - الـ build هنا هو المشكلة
-                          // Email Field (index 0)
+
                           Padding(
                             padding: const EdgeInsets.only(bottom: 14),
                             child: Column(
@@ -517,7 +510,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                               ],
                             ),
                           ),
-                          // New Password Field (index 1)
+
                           Padding(
                             padding: const EdgeInsets.only(bottom: 14),
                             child: Column(
@@ -568,7 +561,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                               ],
                             ),
                           ),
-                          // Confirm Password Field (index 2)
+
                           Padding(
                             padding: const EdgeInsets.only(bottom: 14),
                             child: Column(
@@ -620,7 +613,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                             ),
                           ),
                           const SizedBox(height: 24),
-                          // Reset Button
+
                           SizedBox(
                             width: double.infinity,
                             height: 48,
@@ -681,12 +674,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                     ),
                   ),
                 ),
-                // Loading Overlay
+
                 if (_isLoading)
                   Positioned.fill(
                     child: Container(color: Colors.black.withOpacity(0.35)),
                   ),
-                // Listening Indicator
+
                 if (p.isVoiceMode && !p.voiceDisabled && _isRecording)
                   Positioned(
                     bottom: 48,
@@ -725,7 +718,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
   }
 }
 
-// ==================== GLASS FIELD WIDGET ====================
 
 class _GlassField extends StatelessWidget {
   final TextEditingController controller;

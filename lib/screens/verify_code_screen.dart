@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart'
     show LocaleProvider, LumosVoiceService, LumosHaptics, ShakeDetector, AppStrings;
-import 'package:lumos/screens/reset_password_screen.dart'; // Ensure this path is correct
+import 'package:lumos/screens/reset_password_screen.dart';
 const _orange = Color(0xFFF27F0D);
 const _txtW = Color(0xFFF1F5F9);
 const _txtGray = Color(0xFF64748B);
@@ -172,7 +172,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
       _speak(_error!);
       return;
     }
-    // انتقل إلى شاشة reset-password مع الإيميل والكود
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ResetPasswordScreen(email: widget.email, token: code),
@@ -200,7 +199,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
             },
             child: Stack(
               children: [
-                // Background (نفس الـ Glass Card)
                 Positioned.fill(
                   child: Image.asset('assets/images/lumos_background.png', fit: BoxFit.cover),
                 ),
@@ -301,7 +299,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
   }
 }
 
-// ==================== GLASS FIELD ====================
 class _GlassField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
